@@ -24,7 +24,6 @@ static void move_layers(void) {
 
 	// Date text
 	MOVE_TEXT_LAYER(Date_Layer, 20, 63+Y_OFFSET, 180-20-25 /* width */, 30 /* height */);
-	MOVE_TEXT_LAYER(cwLayer, 180-64-35, 135+Y_OFFSET, 64, 20); //64 = label_width = 144-72-2*4 = display_width - display_width/2 - 2*Space
 	MOVE_TEXT_LAYER(moonLayer_IMG, 51+X_OFFSET, 18+Y_OFFSET, 33, 33);
 	MOVE_TEXT_LAYER(weather_layer_1_temp, 87+X_OFFSET, 10+Y_OFFSET, 180-87-X_OFFSET, 30);
 	MOVE_TEXT_LAYER(weather_layer_3_location, 0, -1+Y_OFFSET, 180, 17);
@@ -124,15 +123,6 @@ static void create_layers(void) {
 	text_layer_set_font(Date_Layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
 	text_layer_set_text_alignment(Date_Layer, GTextAlignmentCenter);
 	layer_add_child(main_window_layer, text_layer_get_layer(Date_Layer));
-
-	// Calendar Week
-	cwLayer = text_layer_create(GRectZero); //64 = label_width = 144-72-2*4 = display_width - display_width/2 - 2*Space
-	text_layer_set_text_color(cwLayer, textcolor);
-	text_layer_set_background_color(cwLayer, GColorClear );
-	text_layer_set_font(cwLayer, fonts_get_system_font(FONT_KEY_GOTHIC_14));
-	text_layer_set_text_alignment(cwLayer, GTextAlignmentRight);
-	layer_add_child(main_window_layer, text_layer_get_layer(cwLayer));
-	//set_cwLayer_size();
 
 	// Moon phase
 	moonLayer_IMG = text_layer_create(GRectZero);

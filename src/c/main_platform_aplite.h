@@ -39,7 +39,6 @@ static TextLayer *battery_runtime_layer;
 static TextLayer *connection_layer;
 
 static TextLayer *Date_Layer;
-static TextLayer *cwLayer; //calender week
 
 static TextLayer *moonLayer_IMG;
 GFont pFontMoon     = 0;
@@ -178,7 +177,6 @@ static int warning_color_location = 0; //0: no warning, 1: red warning (GPS diff
 
 
 
-static void set_cwLayer_size(void);
 static void apply_color_profile(void);
 #ifndef PBL_PLATFORM_APLITE
   static void timer_cycle_color_profile_callback(void *data);
@@ -1013,21 +1011,6 @@ static void handle_second_tick(struct tm* current_time, TimeUnits units_changed)
   NightModeOld = NightMode;
   
   
-	if (units_changed & HOUR_UNIT){
-		// -------------------- Calendar week  
-	  static char cw_text[] = "XX00";
-    if (strcmp("fr_FR", sys_locale) == 0) {
-		  strftime(cw_text, sizeof(cw_text), TRANSLATION_CW_FR, &current_time_copy);
-    } else if (strcmp("de_DE", sys_locale) == 0) {
-      strftime(cw_text, sizeof(cw_text), TRANSLATION_CW_DE, &current_time_copy);
-    } else { //default
-      strftime(cw_text, sizeof(cw_text), TRANSLATION_CW_EN, &current_time_copy);
-    }
-		text_layer_set_text(cwLayer, cw_text); 
-		// ------------------- Calendar week 
-  }
-  
-  
   static char buffer_9[20];
   if (units_changed & MINUTE_UNIT){
     if (TimeZoneFormat == 0){
@@ -1588,7 +1571,6 @@ static void apply_color_profile(void){
   text_layer_set_text_color(connection_layer, textcolor_con);
   text_layer_set_text_color(battery_runtime_layer, textcolor_bat);
   text_layer_set_text_color(Date_Layer, textcolor_date);
-  text_layer_set_text_color(cwLayer, textcolor_cal);
   text_layer_set_text_color(moonLayer_IMG, textcolor_moon);
   text_layer_set_text_color(weather_layer_1_temp, textcolor_weather);
   text_layer_set_text_color(weather_layer_3_location, textcolor_location);
@@ -1630,29 +1612,6 @@ static void apply_color_profile(void){
   #endif
 }
 
-  
-static void set_cwLayer_size(void){
-  #if defined(PBL_PLATFORM_APLITE) || defined(PBL_PLATFORM_BASALT)
-    #ifdef COMPILE_WITH_SECONDS
-      if (DisplaySeconds){
-        if ((TimeZoneFormat == 1) && (HealthInfo == 0)){
-          text_layer_set_text_alignment(cwLayer, GTextAlignmentCenter);
-          layer_set_frame(text_layer_get_layer(cwLayer), GRect(0+X_OFFSET, 135+Y_OFFSET, 144, 20));
-        } else {
-          text_layer_set_text_alignment(cwLayer, GTextAlignmentLeft);
-          layer_set_frame(text_layer_get_layer(cwLayer), GRect(72+X_OFFSET, 135+Y_OFFSET, 64, 20));
-        }
-      } else {
-        text_layer_set_text_alignment(cwLayer, GTextAlignmentRight); // this must be done before layer_set_frame for alignment on Aplite.
-        layer_set_frame(text_layer_get_layer(cwLayer), GRect(72+X_OFFSET, 135+Y_OFFSET, 64, 20));
-      }
-    #endif
-    #ifndef COMPILE_WITH_SECONDS
-      text_layer_set_text_alignment(cwLayer, GTextAlignmentRight); // this must be done before layer_set_frame for alignment on Aplite.
-      layer_set_frame(text_layer_get_layer(cwLayer), GRect(72+X_OFFSET, 135+Y_OFFSET, 64, 20));
-    #endif
-  #endif
-}
 
 #ifndef PBL_PLATFORM_APLITE
 #if defined(PBL_HEALTH)
@@ -1916,7 +1875,6 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     case KEY_SET_DISPLAY_SEC:
       DisplaySeconds = (int)t->value->int32;
       //APP_LOG(APP_LOG_LEVEL_INFO, "DisplaySeconds = %d", DisplaySeconds);
-      set_cwLayer_size();
       layer_mark_dirty(s_image_layer_second_1);
       layer_mark_dirty(s_image_layer_second_2);
       tick_timer_service_unsubscribe();
@@ -1941,7 +1899,6 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     case KEY_SET_TZ_FORMAT:
       TimeZoneFormat = (int)t->value->int32;
       Settings_received = true;
-      set_cwLayer_size();
       break;
     #ifndef PBL_PLATFORM_APLITE
     case KEY_SET_COLORED_TMP:
@@ -1950,7 +1907,6 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     case KEY_SET_HEALTH:
       HealthInfo = (int)t->value->int32;
       Settings_received = true;
-      set_cwLayer_size();
       #if defined(PBL_HEALTH)
         //health_handler(HealthEventSignificantUpdate, NULL);
       #endif
@@ -2208,7 +2164,6 @@ static void main_window_unload(Window *window) {
   text_layer_destroy(battery_runtime_layer); 
   
   text_layer_destroy(Date_Layer);
-  text_layer_destroy(cwLayer);
   
   text_layer_destroy(moonLayer_IMG);
   fonts_unload_custom_font(pFontMoon);
