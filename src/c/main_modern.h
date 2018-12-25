@@ -1306,7 +1306,7 @@ static void handle_bluetooth(bool connected) {
 #ifdef PBL_PLATFORM_CHALK
 	text_layer_set_text(connection_layer, connected ? "BT" : "BT");
 #else
-	text_layer_set_text(connection_layer, connected ? "Bluetooth" : "---------");
+	text_layer_set_text(connection_layer, connected ? "         " : "Conn.Lost");
 #endif
 #ifdef PBL_COLOR
 	if (!connected) text_layer_set_text_color(connection_layer, GColorRed); else text_layer_set_text_color(connection_layer, textcolor_con);
