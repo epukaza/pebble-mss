@@ -6,11 +6,6 @@
 #define LONGITUDE  13.406667
 #define TIMEZONE   +1
 
-// Translation for the calendar week (e.g. "CW%V")
-#define TRANSLATION_CW_DE "KW%V"
-#define TRANSLATION_CW_EN "CW%V"
-#define TRANSLATION_CW_FR "S.%V"
-
 //(un-)comment to change initial settings
 #ifdef PBL_COLOR
   #define INVERT_COLORS 3 //2 means colors on Basalt, and white on black on Aplite
